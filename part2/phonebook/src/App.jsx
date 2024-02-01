@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Numbers from "./components/Numbers/Numbers";
 import PersonForm from "./components/PersonForm/PersonForm";
 import Filter from "./components/Filter/Filter";
+import getPersons from "./services/getPersons";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -13,6 +14,19 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filterName, setFilterName] = useState("");
+
+  useEffect(() => {
+    getAllPersons();
+  }, []);
+
+  const getAllPersons = async () => {
+    try {
+      const data = await getPersons("persons");
+      setPersons(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
