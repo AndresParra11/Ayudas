@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import "./PersonForm.css";
 
 const PersonForm = ({
   handleSubmit,
@@ -8,7 +9,8 @@ const PersonForm = ({
   handlePhoneChange,
 }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="personForm">
+      <h2>add a new</h2>
       <div>
         name: <input value={newName} onChange={handleNameChange} />
       </div>

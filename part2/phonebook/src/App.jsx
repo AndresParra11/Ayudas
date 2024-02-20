@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Numbers from "./components/Numbers/Numbers";
 import PersonForm from "./components/PersonForm/PersonForm";
 import Filter from "./components/Filter/Filter";
-import getPersons from "./services/getPersons";
+import phoneBook from "./services/phoneBook";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -21,26 +21,66 @@ const App = () => {
 
   const getAllPersons = async () => {
     try {
-      const data = await getPersons("persons");
+      const data = await phoneBook.getAll("persons");
       setPersons(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleUpdatePerson = async (id, personChange) => {
+    try {
+      const data = await phoneBook.update("persons", id, personChange);
+      setPersons(
+        persons.map((person) => (person.id !== data.id ? person : data))
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const nameExists = persons.some((person) => person.name === newName);
 
     if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const person = persons.find((person) => person.name === newName);
+        const personChange = { ...person, number: newPhone };
+        await handleUpdatePerson(person.id, personChange);
+        return;
+      }
     } else if (!newName || !newPhone) {
       alert("Please fill in all fields");
     } else {
-      setPersons([...persons, { name: newName, phone: newPhone }]);
-      setNewName("");
-      setNewPhone("");
+      const newPerson = {
+        name: newName,
+        number: newPhone,
+      };
+
+      try {
+        const data = await phoneBook.create("persons", newPerson);
+        setPersons([...persons, data]);
+        setNewName("");
+        setNewPhone("");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDeletePerson = async (id) => {
+    if (window.confirm("¿Seguro que deseas eliminar esta persona?")) {
+      try {
+        await phoneBook.deletePerson("persons", id); // Suponiendo que tengas un método delete en tu servicio phoneBook
+        setPersons(persons.filter((person) => person.id !== id));
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -74,7 +114,10 @@ const App = () => {
         newPhone={newPhone}
         handlePhoneChange={handlePhoneChange}
       />
-      <Numbers persons={filteredPersons ? filteredPersons : persons} />
+      <Numbers
+        persons={filteredPersons ? filteredPersons : persons}
+        deletePerson={handleDeletePerson}
+      />
     </div>
   );
 };

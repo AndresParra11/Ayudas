@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 const Filter = ({ filterName, handleFilterNameChange }) => {
   return (
     <div>
-      filter shown with{" "}
+      filter shown with:{" "}
       <input value={filterName} onChange={handleFilterNameChange} />
     </div>
   );

@@ -1,0 +1,29 @@
+.personForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.personForm h2 {
+  margin: 0px;
+}
+
+button {
+  padding: 5px;
+  height: 25px;
+  border-radius: 5px;
+  background-color: #fcf1f16e;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
+  background-color: rgba(0, 98, 255, 0.679);
+  color: white;
+  border: 1px solid black;
+}
